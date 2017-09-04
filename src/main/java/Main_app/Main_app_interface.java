@@ -110,7 +110,6 @@ public class Main_app_interface {
 		expressionAction.put("if", new IF_Else_structure());
 		
 		fileSystem("test.txt");
-		//mapsList.add(new HashMap<String, AC_Integer>());
 	}
 }
 
