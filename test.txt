@@ -1,0 +1,7 @@
+int main(){
+int a = 12;
+int b;
+int c = 14;
+b = a;
+b = a + 2;
+}
