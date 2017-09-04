@@ -10,13 +10,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 
 import Interfaces.*;
+import Structures.IF_Else_structure;
 import Values_package.*;
 
 public class Main_app_interface {
 	
 	private static HashMap<String, Object> expressionAction = new HashMap<>();
 	
-	private static HashMap<String, Object> valuesMap = new HashMap<>();//? extends Initialization<Object>
+	public static HashMap<String, Object> valuesMap = new HashMap<>();//? extends Initialization<Object>
 	
 	public static void fileSystem(final String fileName) {
 		
@@ -24,14 +25,13 @@ public class Main_app_interface {
 			
 			try (BufferedWriter writerStream = new BufferedWriter(new FileWriter("testOutput.txt"))){
 				String streamString = null;
-				//boolean mainBool = false;
 				
 				while((streamString = readingStream.readLine() )!=null) {
 					
 					if(streamString.contains("int main()")){
 						writerStream.write("+++Main+++");
 						InnerMain inner = new InnerMain();
-						inner.action(readingStream, writerStream);
+						inner.action(readingStream, writerStream, 0);
 					}
 					
 			}
@@ -61,23 +61,41 @@ public class Main_app_interface {
 	
 	public static class InnerMain {
 		
-		public void action(BufferedReader br, BufferedWriter bw) {
+		public void action(BufferedReader br, BufferedWriter bw, int isStructure) {
 			
 			String streamString;
 			ArrayList <String> stringArray = new ArrayList<>();
-			
+			int openBrace=1,closedBrace=0;
 			try {
 			
 			while((streamString = br.readLine() ) != null) {
+				
+				if(streamString.contains("return"))
+					break;
+				
+				if(isStructure!=0) {
+					if(streamString.contains("{") && (openBrace-closedBrace<1)) {
+						openBrace++;
+					}else if (streamString.contains("}")) {
+						closedBrace++;
+					}
+				}
+				
+				if(openBrace==closedBrace)
+					break;
+				
 				stringArray = partingString(streamString);
 				
 				if(expressionAction.containsKey(stringArray.get(0))) {
-					((Initialization) expressionAction.get(stringArray.get(0))).initialization(bw, stringArray, valuesMap);
+					if(!((Initialization) expressionAction.get(stringArray.get(0))).initialization(bw, stringArray, valuesMap)) {
+						((Initialization) expressionAction.get(stringArray.get(0))).initialization(bw, br, stringArray, valuesMap, isStructure++);
+					}
 				}else if(valuesMap.containsKey(stringArray.get(0))) {
-					((Action) valuesMap.get(stringArray.get(0))).action(bw, stringArray, valuesMap);;
+					((Action) valuesMap.get(stringArray.get(0))).action(bw, stringArray, valuesMap, isStructure);;
 				}else {
 					
 				}
+				
 			}
 			
 			}catch(IOException e) {
@@ -85,13 +103,11 @@ public class Main_app_interface {
 			}
 		}
 		
-		public void action(BufferedReader br, BufferedWriter bf, ArrayList<String> arrayString) {
-			
-		}
 	}
 
 	public static void main(String []args) {
 		expressionAction.put("int", new AC_Integer());
+		expressionAction.put("if", new IF_Else_structure());
 		
 		fileSystem("test.txt");
 		//mapsList.add(new HashMap<String, AC_Integer>());

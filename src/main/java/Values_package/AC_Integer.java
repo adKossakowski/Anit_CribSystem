@@ -14,9 +14,9 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 	private static final String basedName = "intVal";
 	private static int basedCounter = 0;
 
-	private String program_name;//real name of variable in testing program
-	private String testing_name;//name in this program
-	private int mountOfCalling;
+	protected String program_name;//real name of variable in testing program
+	protected String testing_name;//name in this program
+	protected int mountOfCalling;
 	
 	private ArrayList <Integer> values = new ArrayList<>();
 	
@@ -95,15 +95,15 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 	
 	//action interface
 	
-	public void action(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap) throws IOException {
+	public void action(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) throws IOException {
 		if(stringArray.size()==1) {
 			//inkrementacja dekrementacja
 		}else if(stringArray.size()==3) {
 			bw.newLine();
-			bw.write(this.initialization(stringArray, valuesMap));
+			bw.write(this.initialization(stringArray, valuesMap, isStructure));
 		}else {
 			bw.newLine();
-			bw.write(this.operation_method(stringArray, valuesMap));
+			bw.write(this.operation_method(stringArray, valuesMap, isStructure));
 		}
 		
 	}
@@ -112,7 +112,7 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 		
 	}*/
 	
-	public void initialization(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap) throws IOException {
+	public boolean initialization(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap) throws IOException {
 		
 		if(stringArray.contains("=")) {
 			valuesMap.put(stringArray.get(1), new AC_Integer(stringArray.get(1), Integer.parseInt(stringArray.get(3)))); 
@@ -127,15 +127,26 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 			bw.newLine();
 			bw.write(sb.toString());
 		}
-		
+		return true;
 	}
 	
-	public String initialization(ArrayList<String> stringArray, HashMap<String, Object> valuesMap) {
+	public String initialization(ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) {
 		
 		AC_Integer target, opt_second;
 		target = (AC_Integer) valuesMap.get(stringArray.get(0));
-		
-		StringBuilder sb = new StringBuilder(target.testing_name);// + "(" + target.attribution() + ")" + " = ");
+		StringBuilder sb;
+		if(isStructure==0)
+			sb = new StringBuilder(target.testing_name);// + "(" + target.attribution() + ")" + " = ");
+		else {
+			sb = new StringBuilder("\t");
+			int count = 1;
+			while(count<isStructure) {
+				sb.append("\t");
+				count++;
+			}
+			sb.append(target.testing_name);
+		}
+			//sb = new StringBuilder("\t" + target.testing_name);
 		if(valuesMap.containsKey(stringArray.get(2))) {
 			opt_second = (AC_Integer)valuesMap.get(stringArray.get(2));
 			target.values.add(opt_second.attribution());
@@ -171,7 +182,7 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 	/////////////////////////////////
 
 
-	public String operation_method(ArrayList<String> stringArray, HashMap<String, Object> valuesMap) {
+	public String operation_method(ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) {
 		
 		AC_Integer tmpAC = (AC_Integer)valuesMap.get(stringArray.get(0));
 		Integer left, right;
@@ -195,7 +206,18 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 		
 		tmpAC.values.add(checkAction(stringArray.get(3).charAt(0), left, right));
 		
-		StringBuilder sb = new StringBuilder(tmpAC.testing_name + "(" + tmpAC.attribution() + ")" + " = ");
+		StringBuilder sb;
+		if(isStructure == 0)
+			sb = new StringBuilder(tmpAC.testing_name + "(" + tmpAC.attribution() + ")" + " = ");
+		else {
+			sb = new StringBuilder("\t ");
+			int count = 1;
+			while(count<isStructure) {
+				sb.append("\t ");
+				count++;
+			}
+			sb.append(tmpAC.testing_name + "(" + tmpAC.attribution() + ")" + " = ");
+		}
 		
 		if(b_left) {
 			sb.append(one.testing_name + "(" + left + ")");

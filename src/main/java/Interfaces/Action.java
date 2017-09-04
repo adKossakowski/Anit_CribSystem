@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public interface Action {
 
-	void action(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap) throws IOException ;
+	void action(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) throws IOException ;
 	
 	//default void action(BufferedReader br, BufferedWriter bf, ArrayList<String> arrayString) {};
 	
