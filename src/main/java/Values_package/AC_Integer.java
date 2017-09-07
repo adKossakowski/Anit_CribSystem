@@ -9,7 +9,7 @@ import Interfaces.*;
 //import Interfaces.Initialization;
 //import Interfaces.Operation_Interface;
 
-public class AC_Integer implements Operation_Interface<Integer>, Action, Initialization {
+public class AC_Integer implements Operation_Interface<Integer>, Action, Initialization, Incrementation {
 	
 	private static final String basedName = "intVal";
 	private static int basedCounter = 0;
@@ -67,6 +67,7 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 				return false;
 		} else if (!program_name.equals(other.program_name))
 			return false;
+		mountOfCalling++;
 		return true;
 	}
 	
@@ -74,43 +75,84 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 	///operation interface
 	
 	public Integer addition(Integer left, Integer right) {
+		mountOfCalling++;
 		return new Integer(left.intValue() + right.intValue());
 	}
 
 	public Integer substraction(Integer left, Integer right) {
+		mountOfCalling++;
 		return new Integer(left.intValue() - right.intValue());
 	}
 	
 	public Integer multiplication(Integer left, Integer right) {
+		mountOfCalling++;
 		return new Integer(left.intValue() * right.intValue());
 	}
 	
 	public Integer division(Integer left, Integer right) {
+		mountOfCalling++;
 		return new Integer(left.intValue() / right.intValue());
 	}
 	
 	public Integer attribution() {
+		mountOfCalling++;
 		return values.get(values.size()-1);
+	}
+	
+	//incrementation decrementation interface
+	
+	public void incrementation() {
+		int i = Integer.parseInt(getLastValue().toString());
+		this.mountOfCalling++;
+		values.add(new Integer(++i));
+	}
+	
+	public void decrementation() {
+		int i = Integer.parseInt(getLastValue().toString());
+		this.mountOfCalling++;
+		values.add(new Integer(--i));
 	}
 	
 	//action interface
 	
-	public void action(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) throws IOException {
-		if(stringArray.size()==1) {
-			//inkrementacja dekrementacja
+	public String action(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) throws IOException {
+		bw.newLine();
+		StringBuilder sb = new StringBuilder("");
+		if(stringArray.size()==2) {
+			if(stringArray.toString().contains("[" + program_name + ", ++]") || stringArray.toString().contains("[++, " + program_name + "]")) {
+				this.incrementation();
+				int count = 0;
+				while(count<isStructure) {
+					sb.append("\t");
+					count++;
+				}
+				sb.append(this.testing_name + "(" + this.getLastValue().toString() + ")" + "++");
+			}else if(stringArray.toString().contains("[" + program_name + ", --]") || stringArray.toString().contains("[--, " + program_name + "]")) {
+				this.decrementation();
+				int count = 0;
+				while(count<isStructure) {
+					sb.append("\t");
+					count++;
+				}
+				sb.append(this.testing_name + "(" + this.getLastValue().toString() + ")" + "--");
+			}else {
+				
+			}
 		}else if(stringArray.size()==3) {
-			bw.newLine();
-			bw.write(this.initialization(stringArray, valuesMap, isStructure));
+			sb.append(this.initialization(stringArray, valuesMap, isStructure));
 		}else {
-			bw.newLine();
-			bw.write(this.operation_method(stringArray, valuesMap, isStructure));
+			sb.append(this.operation_method(stringArray, valuesMap, isStructure));
+		}
+		
+		if(isStructure==0) {
+			bw.write(sb.toString());
+			return null;
+		}else {
+			bw.write(sb.toString());
+			return sb.toString();
 		}
 		
 	}
-	
-	/*public void action(BufferedReader br, BufferedWriter bf, ArrayList<String> arrayString) {
-		
-	}*/
 	
 	public boolean initialization(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap) throws IOException {
 		
@@ -179,6 +221,10 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 		return values.get(i);
 	}
 	
+	public Integer getLastValue() {
+		return values.get(values.size()-1);
+	}
+	
 	/////////////////////////////////
 
 
@@ -237,11 +283,11 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 	}
 	
 	private Integer checkAction(char act, Integer left, Integer right){
-		if(act=='-') {
+		if(act =='-') {
 			return substraction(left,right);
-		}else if(act=='+') {
+		}else if(act == '+') {
 			return addition(left, right);
-		}else if(act=='*') {
+		}else if(act == '*') {
 			return multiplication(left, right);
 		}else{
 			return division(left,right);
