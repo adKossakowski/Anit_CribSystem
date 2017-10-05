@@ -10,13 +10,13 @@ public class testIncrementation {
 
 	@Test
 	public void test() {
-		AC_Integer test = new AC_Integer("test", 0);
+		AC_Integer testInc = new AC_Integer("test", 0);
 		
-		assertEquals("0", test.getLastValue().toString());
-		test.incrementation();
-		assertEquals("1", test.getLastValue().toString());
-		test.decrementation();
-		assertEquals("0", test.getLastValue().toString());
+		assertEquals("0", testInc.getLastValue().toString());
+		testInc.incrementation();
+		assertEquals("1", testInc.getLastValue().toString());
+		testInc.decrementation();
+		assertEquals("0", testInc.getLastValue().toString());
 	}
 
 }

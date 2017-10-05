@@ -4,14 +4,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 
 import Interfaces.*;
-import Structures.IF_Else_structure;
+import Structures.*;
 import Values_package.*;
+import IOStructure.*;
+
+//import org.springframework.beans;
+
 
 public class Main_app_interface {
 	
@@ -75,11 +80,11 @@ public class Main_app_interface {
 				
 				stringArray = partingString(streamString);
 				
-				if(expressionAction.containsKey(stringArray.get(0))) {
+				if(expressionAction.containsKey(stringArray.get(0))) {//jeœli zawiera s³owo z expressionAction
 					if(!((Initialization) expressionAction.get(stringArray.get(0))).initialization(bw, stringArray, valuesMap)) {
 						((Initialization) expressionAction.get(stringArray.get(0))).initialization(bw, br, stringArray, valuesMap, 0);
 					}
-				}else if(valuesMap.containsKey(stringArray.get(0))) {
+				}else if(valuesMap.containsKey(stringArray.get(0))) {//czy istnieje ju¿ zmienna o podanej nazwie
 					((Action) valuesMap.get(stringArray.get(0))).action(bw, stringArray, valuesMap, 0);;
 				}else {
 					
@@ -99,6 +104,8 @@ public class Main_app_interface {
 		expressionAction.put("if", new IF_Else_structure());
 		expressionAction.put("elseif", new IF_Else_structure());
 		expressionAction.put("else", new IF_Else_structure());
+		expressionAction.put("printf", new Printf_structure());
+		expressionAction.put("while", new Loop_structure());
 		
 		fileSystem("test.txt");
 		System.out.println("Koniec");

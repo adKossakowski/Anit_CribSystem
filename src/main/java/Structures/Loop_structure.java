@@ -6,25 +6,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import Interfaces.*;
+import Interfaces.Action;
+import Interfaces.Initialization;
 import Main_app.Main_app_interface;
-import Values_package.*;
+import Values_package.AC_Integer;
 
-public class IF_Else_structure implements Initialization {
+public class Loop_structure implements Initialization {
 	
-	private static HashMap<String,ArrayList<String>> if_structMap = new HashMap<>();
-	private static final String basedName = "IFElseStruct";
+	private static HashMap<String,ArrayList<String>> loop_structMap = new HashMap<>();
+	private static final String basedName = "LoopStruct";
 	private static int strCount = 0;
-	
 	
 	public void initialization (BufferedWriter bw, BufferedReader br, ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) throws IOException {
 		bw.newLine();
 		StringBuilder sb = new StringBuilder("");
-		if(stringArray.get(0).contains("else")) {
-			sb.append("Else");
-		}else {
-			sb.append("IF-scope(");
-		
+		if(stringArray.get(0).equals("while")) {
+			
+			bw.append("while(");
+			
 			if(stringArray.toString().contains("||") || stringArray.toString().contains("&&")) {
 			
 			}else {
@@ -67,18 +66,22 @@ public class IF_Else_structure implements Initialization {
 					}
 				}
 			}
+			
+		}else if(stringArray.get(0).equals("while")) {
+			
+		}else {
+			//pêtla for do zaprogramowania
 		}
-		bw.write(sb.toString());
-		InnerElseIf ifElseInner = new InnerElseIf();
+		bw.write(sb.toString());	
+		InnerLoop loopInner = new InnerLoop();
 		String t_str = basedName+strCount;
-		if_structMap.put(t_str,new ArrayList<String>());
-		if_structMap.get(t_str).add(sb.toString());
-		ifElseInner.action(br, bw, ++isStructure, t_str);
-		
+		loop_structMap.put(t_str,new ArrayList<String>());
+		loop_structMap.get(t_str).add(sb.toString());
+		loopInner.action(br, bw, ++isStructure, t_str);
 	}
 	
-	public static class InnerElseIf implements Action {
-		
+	public static class InnerLoop implements Action {
+
 		public void action(BufferedReader br, BufferedWriter bw, int isStructure, String t_str) {
 			
 			String streamString;
@@ -107,7 +110,7 @@ public class IF_Else_structure implements Initialization {
 						((Initialization) Main_app_interface.expressionAction.get(stringArray.get(0))).initialization(bw, br, stringArray, Main_app_interface.valuesMap, isStructure++);
 					}
 				}else if(Main_app_interface.valuesMap.containsKey(stringArray.get(0))) {
-					if_structMap.get(t_str).add(((Action) Main_app_interface.valuesMap.get(stringArray.get(0))).action(bw, stringArray, Main_app_interface.valuesMap, isStructure));
+					loop_structMap.get(t_str).add(((Action) Main_app_interface.valuesMap.get(stringArray.get(0))).action(bw, stringArray, Main_app_interface.valuesMap, isStructure));
 				}else {
 					
 				}
@@ -118,5 +121,7 @@ public class IF_Else_structure implements Initialization {
 				e.printStackTrace();
 			}
 		}
+
 	}
+
 }
