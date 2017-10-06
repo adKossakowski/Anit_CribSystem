@@ -102,10 +102,11 @@ public class Main_app_interface {
 	public static void main(String []args) {
 		expressionAction.put("int", new AC_Integer());
 		expressionAction.put("if", new IF_Else_structure());
-		expressionAction.put("elseif", new IF_Else_structure());
+		expressionAction.put("else if", new IF_Else_structure());
 		expressionAction.put("else", new IF_Else_structure());
 		expressionAction.put("printf", new Printf_structure());
 		expressionAction.put("while", new Loop_structure());
+		expressionAction.put("for", new Loop_structure());
 		
 		fileSystem("test.txt");
 		System.out.println("Koniec");

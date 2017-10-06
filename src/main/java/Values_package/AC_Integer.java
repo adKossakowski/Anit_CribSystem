@@ -4,12 +4,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import Interfaces.*;
 //import Interfaces.Initialization;
 //import Interfaces.Operation_Interface;
 
-public class AC_Integer implements Operation_Interface<Integer>, Action, Initialization, Incrementation {
+public class AC_Integer implements Operation_Interface<Integer>, Action, Initialization, Incrementation, Compare {
 	
 	private static final String basedName = "intVal";
 	private static int basedCounter = 0;
@@ -74,22 +75,22 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 	
 	///operation interface
 	
-	public Integer addition(Integer left, Integer right) {
+	public Integer addition(Integer left, Integer right) {//+
 		mountOfCalling++;
 		return new Integer(left.intValue() + right.intValue());
 	}
 
-	public Integer substraction(Integer left, Integer right) {
+	public Integer substraction(Integer left, Integer right) {//-
 		mountOfCalling++;
 		return new Integer(left.intValue() - right.intValue());
 	}
 	
-	public Integer multiplication(Integer left, Integer right) {
+	public Integer multiplication(Integer left, Integer right) {//*
 		mountOfCalling++;
 		return new Integer(left.intValue() * right.intValue());
 	}
 	
-	public Integer division(Integer left, Integer right) {
+	public Integer division(Integer left, Integer right) {///
 		mountOfCalling++;
 		return new Integer(left.intValue() / right.intValue());
 	}
@@ -113,9 +114,69 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 		values.add(new Integer(--i));
 	}
 	
+	//compare interface
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public String comparing(List<String> stringList, HashMap<String, Object> valuesMap) {
+		StringBuilder sb = new StringBuilder(this.testing_name + stringList.get(1));
+		int tmp_int;
+		if(valuesMap.containsKey(stringList.get(2))) {
+			//sb.append(((AC_Integer) valuesMap.get(2)).attribution().toString());
+			tmp_int = ((AC_Integer) valuesMap.get(2)).attribution();
+			sb.append(new Integer(tmp_int));
+
+		}else {
+			sb.append(stringList.get(2));
+			tmp_int = Integer.parseInt(stringList.get(2));
+		}
+		
+		if(stringList.get(1).equals("==")) {
+			if(stringList.get(5).equals("++")) {
+				while(this.attribution()!=tmp_int) {
+					this.incrementation();
+				}
+			}else if(stringList.get(5).equals("--")) {
+				while(this.attribution()!=tmp_int) {
+					this.decrementation();
+				}
+			}
+		}else if(stringList.get(1).equals("<=")) {
+			if(stringList.get(5).equals("++")) {
+				while(!(this.attribution()<=tmp_int)) {
+					this.incrementation();
+				}
+			}else if(stringList.get(5).equals("--")) {
+				while(!(this.attribution()<=tmp_int)) {
+					this.decrementation();
+				}
+			}
+		}else if(stringList.get(1).equals(">=")) {
+			if(stringList.get(5).equals("++")) {
+				while(!(this.attribution()>=tmp_int)) {
+					this.incrementation();
+				}
+			}else if(stringList.get(5).equals("--")) {
+				while(!(this.attribution()>=tmp_int)) {
+					this.decrementation();
+				}
+			}
+		}else if(stringList.get(1).equals("!=")) {
+			if(stringList.get(5).equals("++")) {
+				while(!(this.attribution()!=tmp_int)) {
+					this.incrementation();
+				}
+			}else if(stringList.get(5).equals("--")) {
+				while(!(this.attribution()!=tmp_int)) {
+					this.decrementation();
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
 	//action interface
 	
-	public String action(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) throws IOException {
+	public String action(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) throws IOException {//
 		bw.newLine();
 		StringBuilder sb = new StringBuilder("");
 		if(stringArray.size()==2) {
@@ -154,7 +215,7 @@ public class AC_Integer implements Operation_Interface<Integer>, Action, Initial
 		
 	}
 	
-	public boolean initialization(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap) throws IOException {
+	public boolean initialization(BufferedWriter bw, ArrayList<String> stringArray, HashMap<String, Object> valuesMap) throws IOException {//
 		
 		if(stringArray.contains("=")) {
 			valuesMap.put(stringArray.get(1), new AC_Integer(stringArray.get(1), Integer.parseInt(stringArray.get(3)))); 

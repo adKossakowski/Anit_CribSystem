@@ -4,13 +4,15 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import Interfaces.Action;
+import Interfaces.Compare;
 import Interfaces.Incrementation;
 import Interfaces.Initialization;
 import Interfaces.Operation_Interface;
 
-public class AC_Double implements Operation_Interface<Double>, Action, Initialization, Incrementation{
+public class AC_Double implements Operation_Interface<Double>, Action, Initialization, Incrementation, Compare{
 	
 
 	private static final String basedName = "doubVal";
@@ -113,6 +115,66 @@ public class AC_Double implements Operation_Interface<Double>, Action, Initializ
 		double i = Double.parseDouble(getLastValue().toString());
 		this.mountOfCalling++;
 		values.add(new Double(--i));
+	}
+	
+	//compare interface
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public String comparing(List<String> stringList, HashMap<String, Object> valuesMap) {
+		StringBuilder sb = new StringBuilder(this.testing_name + stringList.get(1));
+		double tmp_doub;
+		if(valuesMap.containsKey(stringList.get(2))) {
+			//sb.append(((AC_Integer) valuesMap.get(2)).attribution().toString());
+			tmp_doub = ((AC_Double) valuesMap.get(2)).attribution();
+			sb.append(new Double(tmp_doub));
+
+		}else {
+			sb.append(stringList.get(2));
+			tmp_doub = Double.parseDouble(stringList.get(2));
+		}
+		
+		if(stringList.get(1).equals("==")) {
+			if(stringList.get(5).equals("++")) {
+				while(this.attribution()!=tmp_doub) {
+					this.incrementation();
+				}
+			}else if(stringList.get(5).equals("--")) {
+				while(this.attribution()!=tmp_doub) {
+					this.decrementation();
+				}
+			}
+		}else if(stringList.get(1).equals("<=")) {
+			if(stringList.get(5).equals("++")) {
+				while(!(this.attribution()<=tmp_doub)) {
+					this.incrementation();
+				}
+			}else if(stringList.get(5).equals("--")) {
+				while(!(this.attribution()<=tmp_doub)) {
+					this.decrementation();
+				}
+			}
+		}else if(stringList.get(1).equals(">=")) {
+			if(stringList.get(5).equals("++")) {
+				while(!(this.attribution()>=tmp_doub)) {
+					this.incrementation();
+				}
+			}else if(stringList.get(5).equals("--")) {
+				while(!(this.attribution()>=tmp_doub)) {
+					this.decrementation();
+				}
+			}
+		}else if(stringList.get(1).equals("!=")) {
+			if(stringList.get(5).equals("++")) {
+				while(!(this.attribution()!=tmp_doub)) {
+					this.incrementation();
+				}
+			}else if(stringList.get(5).equals("--")) {
+				while(!(this.attribution()!=tmp_doub)) {
+					this.decrementation();
+				}
+			}
+		}
+		return sb.toString();
 	}
 	
 	//action interface

@@ -3,12 +3,15 @@ package Structures;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import Interfaces.Action;
+import Interfaces.Compare;
 import Interfaces.Initialization;
 import Main_app.Main_app_interface;
+import Structures.IF_Else_structure.InnerStructure;
 import Values_package.AC_Integer;
 
 public class Loop_structure implements Initialization {
@@ -17,6 +20,7 @@ public class Loop_structure implements Initialization {
 	private static final String basedName = "LoopStruct";
 	private static int strCount = 0;
 	
+	@SuppressWarnings({ "unlikely-arg-type" })
 	public void initialization (BufferedWriter bw, BufferedReader br, ArrayList<String> stringArray, HashMap<String, Object> valuesMap, int isStructure) throws IOException {
 		bw.newLine();
 		StringBuilder sb = new StringBuilder("");
@@ -66,62 +70,22 @@ public class Loop_structure implements Initialization {
 					}
 				}
 			}
+			bw.write(sb.toString());
 			
-		}else if(stringArray.get(0).equals("while")) {
+		}else if(stringArray.get(0).equals("do{") || stringArray.get(0).equals("do")) {
 			
-		}else {
-			//pêtla for do zaprogramowania
+		}else if(stringArray.get(0).equals("for")){
+			sb.append("for ( ");
+			sb.append(((Initialization) valuesMap.get(2)).initialization((ArrayList<String>)stringArray.subList(2,5), valuesMap, isStructure) + " ;");
+			sb.append(((Compare) valuesMap.get(6)).comparing(stringArray.subList(6, 12), valuesMap) + " ;");
+			sb.append(((Action) valuesMap.get(10)).action(bw, (ArrayList<String>)stringArray.subList(10,12), valuesMap, isStructure) + " )");
 		}
-		bw.write(sb.toString());	
-		InnerLoop loopInner = new InnerLoop();
+		
+		InnerStructure loopInner = new InnerStructure();
 		String t_str = basedName+strCount;
 		loop_structMap.put(t_str,new ArrayList<String>());
 		loop_structMap.get(t_str).add(sb.toString());
 		loopInner.action(br, bw, ++isStructure, t_str);
-	}
-	
-	public static class InnerLoop implements Action {
-
-		public void action(BufferedReader br, BufferedWriter bw, int isStructure, String t_str) {
-			
-			String streamString;
-			ArrayList <String> stringArray = new ArrayList<>();
-			int openBrace=0,closedBrace=0;
-			try {
-			
-			while((streamString = br.readLine() ) != null) {
-			
-				if(isStructure!=0) {
-					if(streamString.contains("{")) {
-						openBrace++;
-						continue;
-					}else if (streamString.contains("}")) {
-						closedBrace++;
-					}
-				}
-				
-				if(openBrace==closedBrace)
-					break;
-				
-				stringArray = Main_app_interface.partingString(streamString);
-				
-				if(Main_app_interface.expressionAction.containsKey(stringArray.get(0))) {
-					if(!((Initialization) Main_app_interface.expressionAction.get(stringArray.get(0))).initialization(bw, stringArray, Main_app_interface.valuesMap)) {
-						((Initialization) Main_app_interface.expressionAction.get(stringArray.get(0))).initialization(bw, br, stringArray, Main_app_interface.valuesMap, isStructure++);
-					}
-				}else if(Main_app_interface.valuesMap.containsKey(stringArray.get(0))) {
-					loop_structMap.get(t_str).add(((Action) Main_app_interface.valuesMap.get(stringArray.get(0))).action(bw, stringArray, Main_app_interface.valuesMap, isStructure));
-				}else {
-					
-				}
-				
-			}
-			
-			}catch(IOException e) {
-				e.printStackTrace();
-			}
-		}
-
 	}
 
 }

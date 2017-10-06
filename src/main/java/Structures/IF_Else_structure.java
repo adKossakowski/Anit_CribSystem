@@ -69,7 +69,7 @@ public class IF_Else_structure implements Initialization {
 			}
 		}
 		bw.write(sb.toString());
-		InnerElseIf ifElseInner = new InnerElseIf();
+		InnerStructure ifElseInner = new InnerStructure();
 		String t_str = basedName+strCount;
 		if_structMap.put(t_str,new ArrayList<String>());
 		if_structMap.get(t_str).add(sb.toString());
@@ -77,7 +77,7 @@ public class IF_Else_structure implements Initialization {
 		
 	}
 	
-	public static class InnerElseIf implements Action {
+	public static class InnerStructure implements Action {
 		
 		public void action(BufferedReader br, BufferedWriter bw, int isStructure, String t_str) {
 			
